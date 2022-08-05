@@ -1,4 +1,4 @@
 idf_component_register(SRCS "test_app_main.c"
                        INCLUDE_DIRS ""
-                       REQUIRES unity
+                       REQUIRES unity testable
                        WHOLE_ARCHIVE)
