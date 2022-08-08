@@ -35,20 +35,12 @@ This repository follows project layout as described in detail in [Build System](
     ├── /.github
     ├── /components    # <---  (Components of user app)
     ├── /main          # <---  (Main component of user app)
-    ├── /test_app
+    ├── /test_app      # <---  (Test application)
     └── CMakeLists.txt # <---  (User app CMakeLists.txt)
     ```
     You can have multiple apps in a GitHub repository and add them all to the testing process by specifying their paths in the `test_app/CMakeLists.txt` file (see the following text).
 ___
-2. Your components can contain subdirectory `/test` with unit tests
-    ```sh
-    ├── testable_component
-    │   ├── ...
-    │   ├── test   # <---  (subdirectory with unit tests of testable_component)
-    │   │   ├── ...
-    ```
-___
-3. In the file ` test_app/CMakeLists.txt` specify path to your testable components (components that contain unit tests):
+2. In the file ` test_app/CMakeLists.txt` specify path to your testable components (components that contain unit tests):
     ```sh
     ├── components
     ├── /test_app
@@ -58,8 +50,7 @@ ___
     ```cmake
     ...
         # Specify path to testable components
-        set(EXTRA_COMPONENT_DIRS ../components)  # <--- (these components will be built)
-        set(TEST_COMPONENTS testable)            # <--- (these components will be tested)
+        set(EXTRA_COMPONENT_DIRS ../components)  # <--- (these components will be built and tested)
     ...
     ```
 ___
@@ -110,9 +101,7 @@ which is running on your self-hosted runner with connected Espressif boards.
 
 GitHub needs to know which of your self-hosted runner it should use for the test. It is a good practice to tag self-hosted runners in the same format as targets in `esp-idf`.
 
-For example, runner tag `esp32c3` is also `IDF_TARGET` target. By defining this in a [matrix](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs) the same value can be used as target for `build` step a and as runner tag for `run-target` step.
-
-@todo 'step' and 'job' is used here multiple times. Is it the same thing?
+For example, the runner tag `esp32c3` is also the `IDF_TARGET` target. By defining this value in [matrix](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs), the same value can be used as a `IDF_TARGET` for the `build` job and as a runner tag for the `run-target` job.
 
 ___
 #### Publish results (`publish-results`)
