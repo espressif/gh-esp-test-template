@@ -1,0 +1,36 @@
+name: Build Test Application
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build Test App
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        espidf_target: ["esp32", "esp32c3", "esp32s2", "esp32s3"]  # <--- Specify a list of Espressif chips connected to your runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Build Test Application with ESP-IDF
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: "latest" # latest is the default version
+          target: ${{ matrix.espidf_target }}
+          path: 'test_app'
+      - name: Upload files to artifacts for run-target job
+        uses: actions/upload-artifact@v3
+        with:
+          name: test_app_bin_${{ matrix.espidf_target }}
+          path: |
+            test_app/build/bootloader/bootloader.bin
+            test_app/build/partition_table/partition-table.bin
+            test_app/build/example_test_app.bin
+            test_app/build/example_test_app.elf
+            test_app/build/flasher_args.json
+          if-no-files-found: error
