@@ -8,28 +8,28 @@ This repository follows the project layout as described in detail in [Build Syst
 
 **See as example layout of this repository:**
 1. Application code is in the [components](../components/) and [main](../main) directories (example of a real application)
-    ```sh
-    ├── /.github
-    ├── /components    # <---  (Components of user app)
-    ├── /main          # <---  (Main component of user app)
-    ├── /test_app      # <---  (Test application)
-    └── CMakeLists.txt # <---  (User app CMakeLists.txt)
-    ```
-    You can have multiple apps in a GitHub repository and add them all to the testing process by specifying their paths in the `test_app/CMakeLists.txt` file (see the following text).
+  ```sh
+  ├── /.github
+  ├── /components    # <---  (Components of user app)
+  ├── /main          # <---  (Main component of user app)
+  ├── /test_app      # <---  (Test application)
+  └── CMakeLists.txt # <---  (User app CMakeLists.txt)
+  ```
+  You can have multiple apps in a GitHub repository and add them all to the testing process by specifying their paths in the `test_app/CMakeLists.txt` file (see the following text).
 
 2. In the file ` test_app/CMakeLists.txt` specify the path to your testable components (components that contain unit tests):
-    ```sh
-    ├── components
-    ├── /test_app
-    │   ├── CMakeLists.txt   # <---  (define paths for the build system)
+  ```sh
+  ├── components
+  ├── /test_app
+  │   ├── CMakeLists.txt   # <---  (define paths for the build system)
 
-    ```
-    ```cmake
-    ...
-        # Specify the path to testable components
-        set(EXTRA_COMPONENT_DIRS ../components)  # <--- (these components will be built and tested)
-    ...
-    ```
+  ```
+  ```cmake
+  ...
+      # Specify the path to testable components
+      set(EXTRA_COMPONENT_DIRS ../components)  # <--- (these components will be built and tested)
+  ...
+  ```
 
 ## GitHub Action Workflow File (`ci_workflow.yml`)
 
