@@ -8,7 +8,7 @@ jobs:
     name: Run Test App on target
     runs-on: [self-hosted, linux, docker, "${{ matrix.espidf_target }}"]  # (expects tags with the same name as espidf_target)
     container:
-      image: python:3.7-buster
+      image: python:3.9-bullseye
       options: --privileged  # (privileged mode has access to serial ports)
     strategy:
       fail-fast: false
@@ -24,7 +24,9 @@ jobs:
           path: test_app/build
       - name: Install Python packages for PyTest
         env:
-          PIP_EXTRA_INDEX_URL: "https://dl.espressif.com/pypi"
+          PIP_PREFER_BINARY: true
+          PIP_INDEX_URL: "https://dl.espressif.com/pypi/"
+          PIP_EXTRA_INDEX_URL: "https://pypi.org/simple"
         run: |
           pip install \
             pytest-embedded \
