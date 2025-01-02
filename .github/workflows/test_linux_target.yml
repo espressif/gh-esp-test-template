@@ -1,0 +1,52 @@
+name: Run Test Application (Linux Target on Host)
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+jobs:
+  run-target:
+    name: Run Test App on linux target on host
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Download files / artifacts from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: test_app_bin_linux
+          path: test_app/build
+      - name: Install Python packages for PyTest
+        env:
+          PIP_PREFER_BINARY: true
+          PIP_INDEX_URL: "https://dl.espressif.com/pypi/"
+          PIP_EXTRA_INDEX_URL: "https://pypi.org/simple"
+        run: pip install -r test_app/requirements.txt
+      - name: Run Test App on target
+        working-directory: test_app
+        run: |
+          pytest \
+            --junit-xml=./test_app_results_linux.xml \
+            --embedded-services esp,idf \
+            --target=linux
+      - name: Upload test results for publish-results job
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test_app_results_linux
+          path: test_app/*.xml
+  publish-results:
+    name: Publish Test App results
+    needs: run-target
+    runs-on: ubuntu-20.04
+    if: always()  # (run even if the previous steps have failed)
+    steps:
+      - name: Download Test results
+        uses: actions/download-artifact@v4
+        with:
+          path: test_results
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: test_results/**/*.xml
