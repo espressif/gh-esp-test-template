@@ -23,3 +23,7 @@ jobs:
     name: Test Project (Hardware)
     uses: ./.github/workflows/test_esp_app.yml
     needs: build_project
+  test_project_host_linux:
+    name: Test Project (Host, linux-target)
+    uses: ./.github/workflows/test_linux_target.yml
+    needs: build_project
